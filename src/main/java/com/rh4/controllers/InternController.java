@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +26,7 @@ import com.rh4.entities.Admin;
 import com.rh4.entities.GroupEntity;
 import com.rh4.entities.Intern;
 import com.rh4.entities.InternApplication;
+import com.rh4.entities.WeeklyReport;
 import com.rh4.models.ProjectDefinition;
 import com.rh4.repositories.GroupRepo;
 import com.rh4.services.InternService;
@@ -38,6 +40,8 @@ public class InternController {
 
 	@org.springframework.beans.factory.annotation.Value("${projectDefinitionDocument.filepath}")
 	private String projectDefinitionDocument;
+	@org.springframework.beans.factory.annotation.Value("${weeklyReportSubmission.filepath}")
+	private String weeklyReportSubmission;
 	@Autowired
 	private InternService internService;
 	@Autowired
@@ -139,13 +143,46 @@ public class InternController {
 		group.setProjectDefinition(projectDefinition.getProjectDefinition());
 		group.setDescription(projectDefinition.getDescription());
 		group.setProjectDefinitionDocument(projectDefinition.getProjectDefinitionDocument());
-		group.setProjectDefinitionDocument(
-				uploadfile(req.getFile("projectDefinitionDocument"), "projectDefinitionDocument"));
+		group.setProjectDefinitionDocument(uploadfile(req.getFile("projectDefinitionDocument"), "projectDefinitionDocument"));
 		group.setProjectDefinitionStatus("gpending");
 		groupRepo.save(group);
 		return "redirect:/bisag/intern/project_definition";
 	}
 
+	@GetMapping("/weekly_report_submission")
+	public ModelAndView weeklyReportSubmission() {
+		ModelAndView mv = new ModelAndView("intern/weekly_report_submission");
+		Date nextSubmissionDate = getNextSubmissionDate();
+		Intern intern = getSignedInIntern();
+        GroupEntity group = intern.getGroup();
+		Integer nextSubmissionWeekNo = (Integer) weeklyReportService.getRecentWeekNo(group);
+		List<WeeklyReport> weeklyReports = weeklyReportService.getReports(group.getId());
+		mv.addObject("nextSubmissionDate", nextSubmissionDate);
+		mv.addObject("nextSubmissionWeekNo", nextSubmissionWeekNo);
+		mv.addObject("weeklyReports", weeklyReports);
+		mv.addObject("intern", intern);
+		mv.addObject("group", group);
+		return mv;
+	}
+	
+	@PostMapping("/weekly_report_submission")
+	public String weeklyReportSubmission(@RequestParam("currentWeekNo") int currentWeekNo, MultipartHttpServletRequest req) throws IllegalStateException, IOException, Exception
+	{
+		Intern intern = getSignedInIntern();
+        GroupEntity group = intern.getGroup();
+        Date currentDate = new Date();
+		WeeklyReport weeklyReport = new WeeklyReport();
+		weeklyReport.setGroup(group);
+		weeklyReport.setGuide(group.getGuide());
+		weeklyReport.setIntern(intern);
+		weeklyReport.setReportSubmittedDate(currentDate);
+		weeklyReport.setStatus("submit karyu");
+		//weeklyReport.setSubmittedPdf(weeklyReportSubmission.getProjectDefinitionDocument());
+		weeklyReport.setSubmittedPdf(uploadfile(req.getFile("weeklyReportSubmission"), "weeklyReportSubmission"));
+		weeklyReport.setWeekNo(currentWeekNo);
+		weeklyReportService.addReport(weeklyReport);
+		return "redirect:/bisag/intern/weekly_report_submission";
+	}
 	public String uploadfile(MultipartFile file, String object) throws Exception, IllegalStateException, IOException {
 		try {
 			if (object == "projectDefinitionDocument") {
@@ -160,7 +197,24 @@ public class InternController {
 				} else {
 					return null;
 				}
-			} else {
+			}
+			else if (object == "weeklyReportSubmission") {
+				Intern intern = getSignedInIntern();
+		        GroupEntity group = intern.getGroup();
+				weeklyReportSubmission+="/"+ group.getGroupId();
+				File myDir = new File(weeklyReportSubmission);
+				if (!myDir.exists())
+					myDir.mkdirs();
+				long timeadd = System.currentTimeMillis();
+
+				if (!file.isEmpty()) {
+					file.transferTo(Paths.get(myDir.getAbsolutePath(), timeadd + "_" + file.getOriginalFilename()));
+					return timeadd + "_" + file.getOriginalFilename();
+				} else {
+					return null;
+				}
+			}
+			else {
 				System.out.println("nothing is true");
 				return "redirect:/";
 			}
@@ -170,18 +224,6 @@ public class InternController {
 			return "redirect:/";
 		}
 
-	}
-
-	@GetMapping("/weekly_report_submission")
-	public ModelAndView weeklyReportSubmission() {
-		ModelAndView mv = new ModelAndView("intern/weekly_report_submission");
-		Date nextSubmissionDate = getNextSubmissionDate();
-		Intern intern = getSignedInIntern();
-        GroupEntity group = intern.getGroup();
-		Integer nextSubmissionWeekNo = (Integer) weeklyReportService.getRecentWeekNo(group);
-		mv.addObject("nextSubmissionDate", nextSubmissionDate);
-		mv.addObject("nextSubmissionWeekNo", nextSubmissionWeekNo);
-		return mv;
 	}
 
 }

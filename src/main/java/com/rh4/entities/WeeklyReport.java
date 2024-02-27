@@ -57,7 +57,6 @@ public class WeeklyReport {
 		this.guide = guide;
 		this.status = status;
 	}
-
 	public long getWeeklyReportId() {
 		return weeklyReportId;
 	}

@@ -17,6 +17,9 @@ import com.rh4.entities.WeeklyReport;
 public interface WeeklyReportRepo extends JpaRepository<WeeklyReport, Long> {
 
 	@Query("FROM WeeklyReport w WHERE w.group = :group ORDER BY w.reportSubmittedDate DESC")
-	List<WeeklyReport> getRecentWeekNo(@Param("group") GroupEntity group, PageRequest pageRequest);
+	List<WeeklyReport> getRecentWeekNo(@Param("group") GroupEntity group);
+
+	List<WeeklyReport> findAllByGroupId(long id);
+
 
 }

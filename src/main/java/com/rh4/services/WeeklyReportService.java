@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import com.rh4.entities.GroupEntity;
 import com.rh4.entities.WeeklyReport;
 import com.rh4.repositories.WeeklyReportRepo;
@@ -17,14 +16,22 @@ public class WeeklyReportService {
 	private WeeklyReportRepo weeklyReportRepo;
 
 	public int getRecentWeekNo(GroupEntity group) {
-	    List<WeeklyReport> reports = weeklyReportRepo.getRecentWeekNo(group, PageRequest.of(0, 1));
-
+			List<WeeklyReport> reports = weeklyReportRepo.getRecentWeekNo(group);
 	    if (!reports.isEmpty()) {
-	        return reports.get(0).getWeekNo();
+	        return reports.get(0).getWeekNo() + 1;
 	    } else {
 	        // Handle the case where no reports are found
 	        return 1; // Or any other appropriate value
 	    }
+	}
+
+	public void addReport(WeeklyReport weeklyReport) {
+		weeklyReportRepo.save(weeklyReport);
+		
+	}
+
+	public List<WeeklyReport> getReports(long id) {
+		return weeklyReportRepo.findAllByGroupId(id);
 	}
 
 	

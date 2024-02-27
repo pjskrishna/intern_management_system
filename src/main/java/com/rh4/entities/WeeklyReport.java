@@ -29,6 +29,7 @@ public class WeeklyReport {
 	private GroupEntity group;
 	
 	private Date reportSubmittedDate;
+	private Date deadline;
 	
 	private int weekNo;
 	
@@ -45,18 +46,20 @@ public class WeeklyReport {
 		// TODO Auto-generated constructor stub
 	}
 
-	public WeeklyReport(long weeklyReportId, Intern intern, GroupEntity group, Date reportSubmittedDate, int weekNo,
-			String submittedPdf, Guide guide, String status) {
+	public WeeklyReport(long weeklyReportId, Intern intern, GroupEntity group, Date reportSubmittedDate, Date deadline,
+			int weekNo, String submittedPdf, Guide guide, String status) {
 		super();
 		this.weeklyReportId = weeklyReportId;
 		this.intern = intern;
 		this.group = group;
 		this.reportSubmittedDate = reportSubmittedDate;
+		this.deadline = deadline;
 		this.weekNo = weekNo;
 		this.submittedPdf = submittedPdf;
 		this.guide = guide;
 		this.status = status;
 	}
+
 	public long getWeeklyReportId() {
 		return weeklyReportId;
 	}
@@ -87,6 +90,14 @@ public class WeeklyReport {
 
 	public void setReportSubmittedDate(Date reportSubmittedDate) {
 		this.reportSubmittedDate = reportSubmittedDate;
+	}
+
+	public Date getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
 	}
 
 	public int getWeekNo() {
@@ -120,6 +131,6 @@ public class WeeklyReport {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-  
+
 	
 }

@@ -176,10 +176,17 @@ public class InternController {
 		weeklyReport.setGuide(group.getGuide());
 		weeklyReport.setIntern(intern);
 		weeklyReport.setReportSubmittedDate(currentDate);
-		weeklyReport.setStatus("submit karyu");
-		//weeklyReport.setSubmittedPdf(weeklyReportSubmission.getProjectDefinitionDocument());
 		weeklyReport.setSubmittedPdf(uploadfile(req.getFile("weeklyReportSubmission"), "weeklyReportSubmission"));
 		weeklyReport.setWeekNo(currentWeekNo);
+		weeklyReport.setDeadline(getNextSubmissionDate());
+		// Check if the deadline is greater than or equal to the reportSubmittedDate
+	    if (weeklyReport.getDeadline().compareTo(currentDate) >= 0) {
+	        // If the deadline is greater than or equal to the reportSubmittedDate, set the status to "submitted"
+	        weeklyReport.setStatus("submitted");
+	    } else {
+	        // If the deadline is less than the reportSubmittedDate, set the status to "late submitted"
+	        weeklyReport.setStatus("late submitted");
+	    }
 		weeklyReportService.addReport(weeklyReport);
 		return "redirect:/bisag/intern/weekly_report_submission";
 	}
@@ -201,8 +208,7 @@ public class InternController {
 			else if (object == "weeklyReportSubmission") {
 				Intern intern = getSignedInIntern();
 		        GroupEntity group = intern.getGroup();
-				weeklyReportSubmission+="/"+ group.getGroupId();
-				File myDir = new File(weeklyReportSubmission);
+				File myDir = new File(weeklyReportSubmission + "/"+ group.getGroupId());
 				if (!myDir.exists())
 					myDir.mkdirs();
 				long timeadd = System.currentTimeMillis();
@@ -224,6 +230,6 @@ public class InternController {
 			return "redirect:/";
 		}
 
-	}
+	} 
 
 }

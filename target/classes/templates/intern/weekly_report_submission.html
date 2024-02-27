@@ -92,9 +92,8 @@
 							<a th:href="@{/bisag/intern/weekly_report_details}" target="_blank">
 								<div class="card">
 									<div class="card-body">
-										<h5 class="card-title"><span>Week - </span><span
-												th:text="${weeklyReport.weekNo}"></span></h5>
-										<p class="card-text">This is the content of Card 1.</p>
+										<h5 class="card-title" th:text="'Week - ' + ${weeklyReport.weekNo}"></h5>
+										<p class="card-text">This is the content of Card 1</p>
 									</div>
 								</div>
 							</a>

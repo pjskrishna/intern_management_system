@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+<title>Security Form</title>
+
+<style>
+.lgout {
+	padding: 10px;
+	list-style-type: none;
+	border: 2px solid;
+	border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+
+
+	<main id="main" class="main">
+
+		<div class="pagetitle">
+			<h1>Security Form</h1>
+			<nav>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="index.html">Forms</a></li>
+					<li class="breadcrumb-item active">Security Form</li>
+				</ol>
+			</nav>
+		</div>
+		<!-- End Page Title -->
+
+		<section class="section">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-body">
+
+							<!-- Floating Labels Form -->
+							<form action="/submit_security_form" method="post">
+								<p>
+									I, the undersigned Shri/Kum <input type="text" name="name"
+										required>,
+								</p>
+								<p>
+									Studying if (Write Branch, Semester and Year) <input
+										type="text" name="studyDetails" required> student of
+									(Write College and diversity name) <input type="text"
+										name="collegeName" required> doing project work from
+									date <input type="date" name="projectStartDate" required>
+									to <input type="date" name="projectEndDate" required>
+									at BISAG-N, Gandhinagar.
+								</p>
+
+								<p>For doing the above project work, I hereby agree to the
+									following terms and conditions:</p>
+								<ol>
+									<li>Condition 1: ...</li>
+									<li>Condition 2: ...</li>
+									<li>Condition 3: ...</li>
+									<li>Condition 4: ...</li>
+									<li>Condition 5: ...</li>
+									<li>Condition 6: ...</li>
+									<li>Condition 7: ...</li>
+									<li>Condition 8: ...</li>
+								</ol>
+
+								<!-- Signature Section -->
+								<label for="signature"> Signature: </label>
+							</form>
+							<!-- Security Form -->
+							<form action="/submit_security_form" method="post">
+								<!-- ... (existing fields) ... -->
+								<!-- Signature Section -->
+								<div class="form-group">
+									<label for="security-signature-type">Signature Type: </label> <input
+										type="radio" id="security-signature"
+										name="security-signatureType" value="signature" checked>
+									<label for="security-signature">Signature</label> <input
+										type="radio" id="security-text" name="security-signatureType"
+										value="text"> <label for="security-text">Typing</label>
+
+									<!-- Canvas for Drawing -->
+									<canvas id="security-signature-pad" width="400" height="150"></canvas>
+
+									<!-- Text Input -->
+									<input type="text" id="security-text-input"
+										name="security-textSignature">
+								</div>
+								<!-- ... (existing fields) ... -->
+								<button type="submit" class="btn btn-primary">Submit
+									Security Form</button>
+							</form>
+
+							<!-- End floating Labels Form -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<!-- Include the footer fragment -->
+		<div th:replace="fragments/footerFragment :: footer"></div>
+
+	</main>
+	<!-- End #main -->
+
+	<script>
+		// Initialize Signature Pad
+		var signaturePad = new SignaturePad(document
+				.getElementById('signature-pad'));
+
+		// Handle form submission
+		$('form').submit(function() {
+			// Convert signature to data URL and set it in the hidden input
+			$('#studentSignature').val(signaturePad.toDataURL());
+		});
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+	<script>
+		// Initialize Signature Pads
+		var securitySignaturePad = new SignaturePad(document
+				.getElementById('security-signature-pad'), {
+			backgroundColor : 'rgba(255, 255, 255, 0)',
+			penColor : 'black',
+			onBegin : function() {
+				// Clear any placeholder content when the user starts signing
+				$('#security-signature-pad').empty();
+			}
+		});
+
+		var icardSignaturePad = new SignaturePad(document
+				.getElementById('icard-signature-pad'), {
+			backgroundColor : 'rgba(255, 255, 255, 0)',
+			penColor : 'black',
+			onBegin : function() {
+				// Clear any placeholder content when the user starts signing
+				$('#icard-signature-pad').empty();
+			}
+		});
+
+		// Toggle between drawing and typing for Security Form
+		$('input[name="security-signatureType"]').change(function() {
+			if (this.value === 'signature') {
+				$('#security-signature-pad').show();
+				$('#security-text-input').hide();
+			} else {
+				$('#security-signature-pad').hide();
+				$('#security-text-input').show();
+			}
+		});
+
+		// Toggle between drawing and typing for I-CARD Form
+		$('input[name="icard-signatureType"]').change(function() {
+			if (this.value === 'signature') {
+				$('#icard-signature-pad').show();
+				$('#icard-text-input').hide();
+			} else {
+				$('#icard-signature-pad').hide();
+				$('#icard-text-input').show();
+			}
+		});
+
+		// Handle form submission for Security Form
+		$('form[action="/submit_security_form"]')
+				.submit(
+						function() {
+							if ($(
+									'input[name="security-signatureType"]:checked')
+									.val() === 'signature') {
+								// Convert drawing signature to data URL and set it in the hidden input
+								$('#security-text-input').val(''); // Clear text input if any
+								$('#security-studentSignature').val(
+										securitySignaturePad.toDataURL());
+							} else {
+								// Set text input value and clear drawing
+								$('#security-studentSignature').val(''); // Clear drawing if any
+								$('#security-signature-pad').empty();
+							}
+						});
+
+		// Handle form submission for I-CARD Form
+		$('form[action="/submit_icard"]')
+				.submit(
+						function() {
+							if ($('input[name="icard-signatureType"]:checked')
+									.val() === 'signature') {
+								// Convert drawing signature to data URL and set it in the hidden input
+								$('#icard-text-input').val(''); // Clear text input if any
+								$('#icard-studentSignature').val(
+										icardSignaturePad.toDataURL());
+							} else {
+								// Set text input value and clear drawing
+								$('#icard-studentSignature').val(''); // Clear drawing if any
+								$('#icard-signature-pad').empty();
+							}
+						});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+<title>ICard Form</title>
+
+<style>
+.lgout {
+	padding: 10px;
+	list-style-type: none;
+	border: 2px solid;
+	border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+
+
+	<main id="main" class="main">
+
+		<div class="pagetitle">
+			<h1>ICard Form</h1>
+			<nav>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="index.html">Forms</a></li>
+					<li class="breadcrumb-item active">ICard Form</li>
+				</ol>
+			</nav>
+		</div>
+		<!-- End Page Title -->
+
+		<section class="section">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-body">
+
+							
+							<!-- I-CARD Form -->
+							<form action="/submit_icard" method="post">
+								<!-- ... (existing fields) ... -->
+								<!-- Signature Section -->
+								<label for="witness">Witness: </label>
+
+								<div class="form-group">
+									<label for="icard-signature-type">Signature Type: </label> <input
+										type="radio" id="icard-signature" name="icard-signatureType"
+										value="signature" checked> <label
+										for="icard-signature">Signature</label> <input type="radio"
+										id="icard-text" name="icard-signatureType" value="text">
+									<label for="icard-text">Typing</label>
+
+									<!-- Canvas for Drawing -->
+									<canvas id="icard-signature-pad" width="400" height="150"></canvas>
+
+									<!-- Text Input -->
+									<input type="text" id="icard-text-input"
+										name="icard-textSignature">
+								</div>
+								<!-- ... (existing fields) ... -->
+								<button type="submit" class="btn btn-primary">Submit
+									I-CARD Form</button>
+								<button type="submit" class="btn btn-primary">Submit</button>
+
+							</form>
+
+							<!-- End floating Labels Form -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<!-- Include the footer fragment -->
+		<div th:replace="fragments/footerFragment :: footer"></div>
+
+	</main>
+	<!-- End #main -->
+
+	<script>
+		// Initialize Signature Pad
+		var signaturePad = new SignaturePad(document
+				.getElementById('signature-pad'));
+
+		// Handle form submission
+		$('form').submit(function() {
+			// Convert signature to data URL and set it in the hidden input
+			$('#studentSignature').val(signaturePad.toDataURL());
+		});
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+	<script>
+		// Initialize Signature Pads
+		var securitySignaturePad = new SignaturePad(document
+				.getElementById('security-signature-pad'), {
+			backgroundColor : 'rgba(255, 255, 255, 0)',
+			penColor : 'black',
+			onBegin : function() {
+				// Clear any placeholder content when the user starts signing
+				$('#security-signature-pad').empty();
+			}
+		});
+
+		var icardSignaturePad = new SignaturePad(document
+				.getElementById('icard-signature-pad'), {
+			backgroundColor : 'rgba(255, 255, 255, 0)',
+			penColor : 'black',
+			onBegin : function() {
+				// Clear any placeholder content when the user starts signing
+				$('#icard-signature-pad').empty();
+			}
+		});
+
+		// Toggle between drawing and typing for Security Form
+		$('input[name="security-signatureType"]').change(function() {
+			if (this.value === 'signature') {
+				$('#security-signature-pad').show();
+				$('#security-text-input').hide();
+			} else {
+				$('#security-signature-pad').hide();
+				$('#security-text-input').show();
+			}
+		});
+
+		// Toggle between drawing and typing for I-CARD Form
+		$('input[name="icard-signatureType"]').change(function() {
+			if (this.value === 'signature') {
+				$('#icard-signature-pad').show();
+				$('#icard-text-input').hide();
+			} else {
+				$('#icard-signature-pad').hide();
+				$('#icard-text-input').show();
+			}
+		});
+
+		// Handle form submission for Security Form
+		$('form[action="/submit_security_form"]')
+				.submit(
+						function() {
+							if ($(
+									'input[name="security-signatureType"]:checked')
+									.val() === 'signature') {
+								// Convert drawing signature to data URL and set it in the hidden input
+								$('#security-text-input').val(''); // Clear text input if any
+								$('#security-studentSignature').val(
+										securitySignaturePad.toDataURL());
+							} else {
+								// Set text input value and clear drawing
+								$('#security-studentSignature').val(''); // Clear drawing if any
+								$('#security-signature-pad').empty();
+							}
+						});
+
+		// Handle form submission for I-CARD Form
+		$('form[action="/submit_icard"]')
+				.submit(
+						function() {
+							if ($('input[name="icard-signatureType"]:checked')
+									.val() === 'signature') {
+								// Convert drawing signature to data URL and set it in the hidden input
+								$('#icard-text-input').val(''); // Clear text input if any
+								$('#icard-studentSignature').val(
+										icardSignaturePad.toDataURL());
+							} else {
+								// Set text input value and clear drawing
+								$('#icard-studentSignature').val(''); // Clear drawing if any
+								$('#icard-signature-pad').empty();
+							}
+						});
+	</script>
+</body>
+
+</html>

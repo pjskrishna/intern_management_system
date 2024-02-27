@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intern's Weekly Report</title>
+<!-- Include any necessary styles or scripts -->
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- Bootstrap CSS is used for the card layout in this example -->
+
+<style>
+.model-lg {
+	width: 60%;
+}
+</style>
+
+</head>
+
+<body>
+
+	<!-- Include the header fragment -->
+	<div th:replace="fragments/guideHeaderFragment :: header"></div>
+
+	<!-- Include the aside fragment -->
+	<div th:replace="fragments/guideAsideFragment :: aside"></div>
+
+	<main id="main" class="main">
+
+		<section class="section dashboard">
+			<div class="container">
+				<div class="row">
+
+					<!-- Second Sales Card -->
+					<div class="col-xxl-6 col-md-6">
+						<div class="card info-card sales-card">
+
+							<div class="card-body">
+
+								<div class="d-flex align-items-center">
+									<div
+										class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+										<i class="bi bi-people"></i>
+									</div>
+									<div class="ps-3">
+										<h4>
+											<span>Next Submission Date</span>
+										</h4>
+										<h5>
+											<span class="text-success small pt-1 fw-bold">08/05/2024</span>
+											<span class="text-success small pt-1 fw-bold">(Week-4)</span>
+										</h5>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- First Sales Card -->
+					<div class="col-xxl-6 col-md-6">
+						<div class="card info-card sales-card">
+
+							<div class="card-body">
+
+								<div class="d-flex align-items-center">
+									<div
+										class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+										<i class="bi bi-people"></i>
+									</div>
+									<div class="ps-3">
+										<h4>
+											<span>Status</span>
+										</h4>
+										<h5>
+											<span class="text-success small pt-1 fw-bold">Pending</span>
+										</h5>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<div class="container mt-2">
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title">Intern Groups</h5>
+				</div>
+				<div class="card-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">Group ID</th>
+								<th scope="col">Project</th>
+								<th scope="col">Domain</th>
+								<th scope="col">Total Reports</th>
+								<th scope="col">Next Report</th>
+								<th scope="col">Action</th>
+								<!-- Add more table headers as needed -->
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">1</th>
+								<td>John Doe</td>
+								<td>John Doe</td>
+								<td>John Doe</td>
+								<td>25</td>
+								<td><button class="btn btn-primary" data-toggle="modal"
+										data-target="#myModal">+</button></td>
+								<!-- Add more table data rows as needed -->
+							</tr>
+							<tr>
+								<th scope="row">2</th>
+								<td>Jane Smith</td>
+								<td>John Doe</td>
+								<td>John Doe</td>
+								<td>30</td>
+								<td><button class="btn btn-primary" data-toggle="modal"
+										data-target="#myModal">+</button></td>
+								<!-- Add more table data rows as needed -->
+							</tr>
+							<!-- Add more rows as needed -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-lg"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Reports</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="card-body">
+							<div class="row">
+
+								<div class="col-md-3">
+									<a th:href="@{/bisag/guide/report_page}" target="_blank">
+										<div class="card">
+											<div class="card-body">
+												<h5 class="card-title">Card 1</h5>
+												<p class="card-text">This is the content of Card 1.</p>
+											</div>
+										</div>
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<!-- Include the footer fragment -->
+		<div th:replace="fragments/footerFragment :: footer"></div>
+	</main>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<!-- Bootstrap JS is used for the card layout in this example -->
+
+	<script>
+		$(document).ready(function() {
+			$(".btn-expand").click(function() {
+				$(".expandable-card-body").toggleClass("expanded");
+			});
+		});
+	</script>
+
+</body>
+
+</html>
